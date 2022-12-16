@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 export default function Meme() {
+  // state to show meme image and text
   const [meme, setMeme] = useState({
     topText: "",
     bottomText: "",
@@ -9,21 +10,37 @@ export default function Meme() {
 
   const [allMemes, setAllMemes] = useState([]);
 
-  useEffect(() => {
-    fetch("https://api.imgflip.com/get_memes")
-      .then((res) => res.json())
-      .then((data) => setAllMemes(data.data.memes));
+  // useEffect(() => {
+  //   fetch("https://api.imgflip.com/get_memes")
+  //     .then((res) => res.json())
+  //     .then((data) => setAllMemes(data.data.memes));
+  // }, []);
+
+  // making API Calls using async function inside useEffect hook
+  React.useEffect(() => {
+    async function getMemes() {
+      const res = await fetch("https://api.imgflip.com/get_memes");
+      const data = await res.json();
+      setAllMemes(data.data.memes);
+    }
+    getMemes();
   }, []);
 
   function getMemeImage() {
+    // generating random number within limit of available memes
     const randomNumber = Math.floor(Math.random() * allMemes.length);
+
+    // picking url of meme img based on random number
     const url = allMemes[randomNumber].url;
+
+    // updating memeState to show random img
     setMeme((prevMeme) => ({
       ...prevMeme,
       randomImage: url,
     }));
   }
 
+  // getting inputs from input fields
   function handleChange(event) {
     const { name, value } = event.target;
     setMeme((prevMeme) => ({
